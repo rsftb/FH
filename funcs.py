@@ -1,0 +1,201 @@
+
+import colorama as clr
+import shutil 
+
+import time
+import os
+import sys
+
+
+
+def typing(sentence: str, slp: float, prtend='', newln=False):
+    """Customizable typewriter effect for console printing"""
+    
+    for letter in sentence:
+        time.sleep(slp/2)
+        print(letter, end=prtend, flush=True)
+        time.sleep(slp/2)   
+        
+    if newln:
+        print()
+    
+    return ''
+
+
+#? printing what color 
+def change_directory(): 
+    typing(clr.Fore.GREEN + " \\\\ Change directory to? (case insensitive) => " + os.getcwd() + clr.Style.RESET_ALL, 0.01, newln=True)
+    
+    to = input(typing(clr.Fore.GREEN + "  || " + clr.Style.RESET_ALL + "C:\\", 0.01))
+    goto = f"c:\\{to}"
+    
+    try:
+        os.chdir(goto)
+        typing(clr.Fore.GREEN + f" // {os.getcwd()}" + clr.Style.RESET_ALL, 0.01, newln=True)
+    except FileNotFoundError as err:
+        print(f"{clr.Fore.GREEN} // Path not found. {clr.Style.RESET_ALL}")
+        return False
+    
+    return True
+    
+    
+def show_directory(case: int, backout: bool):
+    """Displays directory content by filter, prepends folders with `>>`"""
+
+    print(clr.Fore.GREEN + os.getcwd() + clr.Style.RESET_ALL) 
+    
+    if not os.listdir():
+        print(clr.Fore.BLACK + " # EMPTY DIRECTORY" + clr.Style.RESET_ALL)
+
+    else:
+
+        try:
+            
+            if case == 0: #* SHOWING FILES AND DIRECTORIES
+                for item in os.listdir(): 
+                    if os.path.isdir(item):
+                        print(clr.Fore.RED + ">>" + clr.Style.RESET_ALL + item)
+                    else:
+                        print(clr.Fore.LIGHTBLACK_EX + item + clr.Style.RESET_ALL)    
+            
+            elif case == 1: #* SHOWING DIRECTORIES
+                for item in os.listdir():
+                    if os.path.isdir(item):
+                        print(clr.Fore.RED + ">>" + clr.Fore.WHITE + item + clr.Style.RESET_ALL)
+            
+            elif case == 2: #* SHOWING FILES
+                for item in os.listdir():
+                    if os.path.isfile(item):
+                        print(clr.Fore.LIGHTBLACK_EX + item + clr.Style.RESET_ALL)
+    
+        except PermissionError as err:
+            print(f"PermissionError | Not Authorized \n{err}")
+        
+    if backout:
+        return ''
+
+
+def move_directory():
+    """Execution opens an interface for moving through local files"""
+    typing(clr.Fore.LIGHTGREEN_EX + ":: :: :: ::" + clr.Style.RESET_ALL, 0.01, newln=True)
+    display_valve = 0
+    while True:
+        #? os.system("cls||clear")
+        
+        show_directory(display_valve, False)
+        select = input(typing(clr.Fore.LIGHTGREEN_EX + ":: " + clr.Style.RESET_ALL, 0.01)).lower()
+        print()
+        
+        if not select:
+            continue
+        
+        if select[0] == '-':
+            sub_cmd = True
+        else:
+            sub_cmd = False
+        
+        if select == '-exit' or select == '-e': #* Exit
+            typing(clr.Fore.LIGHTGREEN_EX + ":: :: :: " + os.getcwd() + clr.Style.RESET_ALL, 0.01, newln=True)
+            return True
+        
+        elif select in '-files': #* Swap content display filter
+            if display_valve == 0:
+                print(clr.Fore.GREEN + "SHOWING DIRECTORIES" + clr.Style.RESET_ALL)
+            elif display_valve == 1:
+                print(clr.Fore.GREEN + "SHOWING FILES" + clr.Style.RESET_ALL)
+            elif display_valve == 2:
+                print(clr.Fore.GREEN + "SHOWING FILES AND DIRECTORIES" + clr.Style.RESET_ALL)
+                
+            display_valve += 1
+            display_valve = display_valve % 3
+            
+            
+        elif select == '-up' or select == '-u': #* Move up a directory
+            os.chdir('..')
+            
+        elif select == '-mkdir' or select == '-mk': #* Create a named folder
+            print(clr.Fore.GREEN + "Name of folder?" + clr.Style.RESET_ALL)
+            folder = input(typing(clr.Fore.LIGHTGREEN_EX + ":: " + clr.Style.RESET_ALL, 0.01)).lower()
+            
+            if not folder:
+                print(f"{clr.Fore.RED}-- Warning: Empty string given{clr.Style.RESET_ALL}\n")
+                continue
+            
+            try:
+                os.mkdir(f'{os.getcwd()}/{folder}')             
+            except FileExistsError as err:
+                print(f"FileExistsError | '{folder}' \n{err}")
+            except OSError as err:
+                print(f"OSError | Did the input contain special characters? \n{err}")
+            
+            print()
+
+        
+        elif select == '-remove' or select == '-r': #* Remove a named item in the current directory
+            print(clr.Fore.GREEN + "Name of item to remove?" + clr.Style.RESET_ALL)
+            folder = input(typing(clr.Fore.LIGHTGREEN_EX + ":: " + clr.Style.RESET_ALL, 0.01)).lower()
+            
+            if not folder:
+                print(f"{clr.Fore.RED}-- Warning: Empty string given{clr.Style.RESET_ALL}\n")
+                continue
+            
+            print(f"{clr.Fore.RED}\nAre you sure you want to remove `{folder}`?{clr.Style.RESET_ALL}")
+            answer = input(typing(clr.Fore.RED + ":: " + clr.Style.RESET_ALL, 0.07)).lower()
+            
+            if answer == "no" or answer in "no" or answer != "yes" or answer not in "yes":
+                print()
+                continue
+            
+            try:
+                shutil.rmtree(f'{os.getcwd()}/{folder}')
+            except FileNotFoundError as err:
+                print(f"FileNotFoundError \n{err}")
+            except OSError as err:
+                print(f"OSError \n{err}")
+    
+            print()
+        
+        else: #* If input isn't command, try to enter a directory
+            goto = f"\\{select}"
+            try:
+                os.chdir(f"{os.getcwd()}{goto}")
+            except FileNotFoundError as err:
+                print(f"FileNotFoundError \n{err}")
+            except OSError as err:
+                print(f"OSError | Bad input \n{err}")       
+
+            print()
+            
+            
+        continue
+
+
+def jump_directory(): 
+    """Jumps back to a select /directory/ in the tree by typing the name"""
+    # case sensitive, check if string is in 'here' (.lower?), maybe it's not a bad thing too
+    typing(clr.Fore.CYAN + " \\\\ Jump to? (case sensitive) => " + os.getcwd() + clr.Style.RESET_ALL, 0.01, newln=True)
+    to = input(typing(clr.Fore.CYAN + "  || " + clr.Style.RESET_ALL + "\\", 0.01))
+    here = os.getcwd()
+    where = here.split("\\")
+    
+    if not to or all(letter == ' ' for letter in to):
+        typing(clr.Fore.CYAN + f" // Jump failed, input is empty" + clr.Style.RESET_ALL, 0.005, newln=True)
+        return None
+    
+    if to in where:
+        there = []
+        goto = where.index(to)
+        for pos in range(len(where)): 
+            if pos <= goto:
+                there.append(where[pos])
+            else:
+                break
+        there = "\\".join(there)
+        os.chdir(there)
+        typing(clr.Fore.CYAN + f" // {os.getcwd()}" + clr.Style.RESET_ALL, 0.005, newln=True)
+
+    else:
+        typing(clr.Fore.CYAN + f" // Jump failed, couldn't find directory '{to}' in parent directories" + clr.Style.RESET_ALL, 0.005, newln=True)
+      
+
+ #typing("Mary had a little lamb", 0.09)
