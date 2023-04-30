@@ -1,3 +1,4 @@
+""" FH """
 
 from funcs import *
 
@@ -6,7 +7,6 @@ clr.init()
 
 import os
 import sys
-import shutil
 
 
 # :: help -> Pages displayed by the `help` command
