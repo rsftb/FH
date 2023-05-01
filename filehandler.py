@@ -1,16 +1,17 @@
-
-from funcs import *
-
-import colorama as clr
-clr.init()
+"""
+The main script.
+Executions runs the program.
+"""
 
 import os
 import sys
 
+import colorama as clr
 
-"""
-Main program
-"""
+from funcs import typing, change_directory, show_directory, move_directory, jump_directory
+
+clr.init()
+
 
 
 # :: help -> Pages displayed by the `help` command
@@ -23,7 +24,7 @@ help_pages = {
         "cdir": "Change the current directory",
         "sdir": "Print all files in the current directory",
     },
-    
+
     2: {
         "cls": "Clears the screen",
         "pdir": "Prints the current working directory",
@@ -68,101 +69,106 @@ help_subcom = {
 
 
 def print_help(title):
-    
+    """Executes on any help command"""
+
     #* HEADER // Always prints
     typing(clr.Fore.YELLOW + f":: {title} - {help_header[title]}" + clr.Style.RESET_ALL, 0.01, newln=True)
-    
+
     #* SUB HEADER // Could print
-    if help_subheader[title] != None:
+    if help_subheader[title] is not None:
         for subheader in range(0, len(help_subheader[title])):
             typing(clr.Fore.YELLOW + f":: {help_subheader[title][subheader]}" + clr.Style.RESET_ALL, 0.01, newln=True)
-    
+
     #* SUB COMMANDS // Could print
-    if help_subcom[title] != None:
-        for i in range(0, len(help_subcom[title])-1, 2):  
+    if help_subcom[title] is not None:
+        for i in range(0, len(help_subcom[title])-1, 2):
             typing(clr.Fore.YELLOW + ":: " + clr.Style.RESET_ALL + help_subcom[title][i] + clr.Fore.RED + " >> " + clr.Style.RESET_ALL + help_subcom[title][i+1], 0.01, newln=True)
 
 
 
-# Main class
-# This is the skeleton of the program
-# Main functions are called or present inside this class
-# Initializes at class instantiation
 class FileHandler():
+    """
+    Main class (singleton)
+    This is the skeleton of the program
+    Main functions are called or present inside this class
+    Initializes at class instantiation
+    """
+
     __instance = None
 
     @staticmethod
     def getInstance():
         """Static Access Method"""
-        if FileHandler.__instance == None:
+        if FileHandler.__instance is None:
             FileHandler()
-        
+
         return FileHandler.__instance
 
     def __init__(self, debug_no_play=False):
         self.initializing = True
 
-        
-        if FileHandler.__instance != None:
-           raise UserWarning("Only one instance of FileHandler allowed")
-        else:
-            FileHandler.__instance = self
-        
+
+        if FileHandler.__instance is not None:
+            raise UserWarning("Only one instance of FileHandler allowed")
+
+        FileHandler.__instance = self
+
         self.initializing = False
-        
+
         if not debug_no_play:
             self.window_new(1)
         else:
             return
 
     def window_new(self, mode):
+        """Start-up program"""
         os.system("cls||clear")
-        
+
         try:
             os.chdir(sys.path[0])
-        except Exception: #!
-            raise UserWarning("Could not initialize current directory in new_open()")
-        
+        except Exception as exc: #!
+            raise UserWarning("Could not initialize current directory in new_open()") from exc
+
         if mode == 0:
             color_1 = clr.Fore.LIGHTWHITE_EX
             color_2 = clr.Fore.BLACK
         else:
             color_1 = clr.Fore.BLACK
             color_2 = clr.Fore.LIGHTWHITE_EX
-        
+
         typing(color_1 + "FH - 2023\n" + clr.Style.RESET_ALL, 0.1, newln=True)
         typing(color_2 + os.getcwd() + clr.Style.RESET_ALL, 0.01, newln=True)
-        
+
         print()
-        
+
         self.main()
 
 
     def main(self):
         """Input element for request handler"""
         while True:
-        
+
             select = input(typing(clr.Fore.BLUE + ":: " + clr.Style.RESET_ALL, 0.01)).lower()
-                           
-            if not len(select):         
+
+            if not select:
                 continue
-            else:
-                self.request(select)
-    
-    
+
+            self.request(select)
+
+
     def request(self, req):
         """Pre-processes and/or handles requests"""
         request = req.split(" ")
         run_args = False
         argument = None
-        
+
         if len(request) > 1:
             run_args = True
             argument = request[1]
-        
+
         #* HELP
         if request[0] in "help" or request[0] in "cmd":
-            if run_args == False:
+            if not run_args:
                 self.display_help(1)
                 return True
             try:
@@ -179,51 +185,51 @@ class FileHandler():
             except TypeError:
                 typing(clr.Fore.YELLOW + "-- Type Error" + clr.Style.RESET_ALL, 0.01, newln=True)
                 return 0
-        
+
         #* HELLO WORLD
         elif request[0] in "hello world":
             print(" # hi! " )
-        
+
         #* MOVE
         elif request[0] == "move":
             move_directory()
-        
+
         #* JUMP
         elif request[0] == "jump":
             jump_directory()
-        
+
         #* CDIR
         elif request[0] in "cdir" or request[0] in "changedir":
             change_directory()
-        
+
         #* SDIR
         elif request[0] in "sdir" or request[0] == "showdir":
             if not run_args:
                 show_directory(0, True)
                 return True
-            
+
             if argument == 'd' or argument in "directory":
                 show_directory(1, True)
-            
+
             elif argument == 'f' or argument in "files":
                 show_directory(2, True)
-            
+
             elif argument == 'a' or argument in "all":
                 show_directory(0, True)
-            
+
             else:
                 print(clr.Fore.GREEN + "-- Unknown argument for sdir" + clr.Style.RESET_ALL)
-                return False                
-                
-            
-        #* PRINT DIRECTORY NAME    
+                return False
+
+
+        #* PRINT DIRECTORY NAME
         elif request[0] in "pdir" or request[0] == "printdir":
             print(" # " + clr.Fore.GREEN + os.getcwd() + clr.Style.RESET_ALL)
-            
+
         #* CLEAR
         elif request[0] in "cls" or request[0] == "clear":
             os.system("cls||clear")
-        
+
         #* PRINT
         elif request[0] == "prt" or request[0] == "print":
             if len(request) < 2:
@@ -231,17 +237,17 @@ class FileHandler():
             if not request[1]:
                 return False
             print(" # " + " ".join(request[1:]), end="\n")
-        
+
         #* EXIT
         elif request[0] in "exit":
             self.window_end()
-        
+
         else:
             return False
-        return False
-    
-    
-    def display_help(self, page=1):        
+        return True
+
+
+    def display_help(self, page=1):
         """Prints a page of the help menu >> `:: help 2`\n
         Prints a description of a command >> `:: help cdir`"""
         if page > 2:
@@ -249,22 +255,24 @@ class FileHandler():
             return 0
 
         typing(clr.Fore.YELLOW + f":: :: :: HELP {page}/2" + clr.Style.RESET_ALL, 0.007, newln=True)
-        
+
         for cmd, desc in help_pages[page].items():
-            typing(clr.Fore.YELLOW + ":: " + clr.Style.RESET_ALL + cmd + clr.Fore.RED + " >> " + clr.Style.RESET_ALL + desc, 0.007, newln=True)    
-        
+            typing(clr.Fore.YELLOW + ":: " + clr.Style.RESET_ALL + cmd + clr.Fore.RED + " >> " + clr.Style.RESET_ALL + desc, 0.007, newln=True)
+
         typing(clr.Fore.YELLOW + ":: " + clr.Style.RESET_ALL + "use help (...) for help on specific commands", 0.007, newln=True)
         typing(clr.Fore.YELLOW + ":: ::" + clr.Style.RESET_ALL, 0.01, newln=True)
 
+        return True
 
     def window_end(self):
+        """Quits the program"""
         typing(clr.Fore.LIGHTRED_EX + "::::::::" + clr.Style.RESET_ALL, 0.015, newln=True)
         quit()
-        
-        
-        
-        
-if __name__ == "__main__":  
+
+
+
+
+if __name__ == "__main__":
     FH = FileHandler(debug_no_play=False)
 
     print("\n--EXIT--")
