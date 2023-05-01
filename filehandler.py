@@ -43,7 +43,7 @@ help_header = {
 }
 
 # :: help (cmd) -> Extra information if needed
-#   Format is one list index per string
+#   Format is one list index per string printed
 help_subheader = {
     "help": None,
     "move": None,
@@ -120,7 +120,7 @@ class FileHandler():
         
         try:
             os.chdir(sys.path[0])
-        except Exception:
+        except Exception: #!
             raise UserWarning("Could not initialize current directory in new_open()")
         
         if mode == 0:
