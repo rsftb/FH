@@ -50,7 +50,6 @@ def show_directory(case: int, backout: bool):
         print(clr.Fore.BLACK + " # EMPTY DIRECTORY" + clr.Style.RESET_ALL)
 
     else:
-
         try:
 
             if case == 0: #* SHOWING FILES AND DIRECTORIES
@@ -178,28 +177,29 @@ def jump_directory():
     """Jumps back to a select /directory/ in the tree by typing the name"""
     # case sensitive, check if string is in 'here' (.lower?), maybe it's not a bad thing too
     typing(clr.Fore.CYAN + " \\\\ Jump to? (case sensitive) => " + os.getcwd() + clr.Style.RESET_ALL, 0.01, newln=True)
-    to = input(typing(clr.Fore.CYAN + "  || " + clr.Style.RESET_ALL + "\\", 0.01))
-    here = os.getcwd()
-    where = here.split("\\")
+    parent = input(typing(clr.Fore.CYAN + "  || " + clr.Style.RESET_ALL + "\\", 0.01))
+    cwd_split = os.getcwd().split("\\")
 
-    if not to or all(letter == ' ' for letter in to):
+    if not parent or parent[0] == ' ' or all(letter == ' ' for letter in parent):
         typing(clr.Fore.CYAN + " // Jump failed, input is empty" + clr.Style.RESET_ALL, 0.005, newln=True)
         return None
 
-    if to in where:
-        there = []
-        goto = where.index(to)
-        for pos in range(len(where)):
-            if pos <= goto:
-                there.append(where[pos])
-            else:
-                break
-        there = "\\".join(there)
-        os.chdir(there)
-        typing(clr.Fore.CYAN + f" // {os.getcwd()}" + clr.Style.RESET_ALL, 0.005, newln=True)
-
-    else:
-        typing(clr.Fore.CYAN + f" // Jump failed, couldn't find directory '{to}' in parent directories" + clr.Style.RESET_ALL, 0.005, newln=True)
+    if parent not in cwd_split:
+        typing(clr.Fore.CYAN + f" // Jump failed, couldn't find directory '{parent}' in parent directories" + clr.Style.RESET_ALL, 0.005, newln=True)
+        return False
+    
+    new_path = []
+    new_dir_idx = cwd_split.index(parent)
+    
+    for idx, dir_name in enumerate(cwd_split):
+        if idx <= new_dir_idx:
+            new_path.append(dir_name)
+        else:
+            break
+        
+    new_path = "\\".join(new_path)
+    os.chdir(new_path)
+    typing(clr.Fore.CYAN + f" // {os.getcwd()}" + clr.Style.RESET_ALL, 0.005, newln=True)
 
     return True
 
