@@ -4,8 +4,11 @@ import shutil
 
 import time
 import os
-import sys
 
+
+"""
+Functions used by filehandler.py
+"""
 
 
 def typing(sentence: str, slp: float, prtend='', newln=False):

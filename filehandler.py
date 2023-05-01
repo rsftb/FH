@@ -8,6 +8,11 @@ import os
 import sys
 
 
+"""
+Main program
+"""
+
+
 # :: help -> Pages displayed by the `help` command
 #   Format is one string per command
 help_pages = {
