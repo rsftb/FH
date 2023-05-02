@@ -41,7 +41,7 @@ def change_directory():
     return True
 
 
-def show_directory(case: int, backout: bool):
+def show_directory(case: int):
     """Displays directory content by filter, prepends folders with `>>`"""
 
     print(clr.Fore.GREEN + os.getcwd() + clr.Style.RESET_ALL)
@@ -72,10 +72,7 @@ def show_directory(case: int, backout: bool):
         except PermissionError as err:
             print(f"PermissionError | Not Authorized \n{err}")
 
-    if backout:
-        return ''
-
-    return None
+    return ''
 
 
 def move_directory():
@@ -187,20 +184,56 @@ def jump_directory():
     if parent not in cwd_split:
         typing(clr.Fore.CYAN + f" // Jump failed, couldn't find directory '{parent}' in parent directories" + clr.Style.RESET_ALL, 0.005, newln=True)
         return False
-    
+
     new_path = []
     new_dir_idx = cwd_split.index(parent)
-    
+
     for idx, dir_name in enumerate(cwd_split):
         if idx <= new_dir_idx:
             new_path.append(dir_name)
         else:
             break
-        
+
     new_path = "\\".join(new_path)
     os.chdir(new_path)
     typing(clr.Fore.CYAN + f" // {os.getcwd()}" + clr.Style.RESET_ALL, 0.005, newln=True)
 
     return True
+
+
+def exec_code():
+    """Allows you to execute raw Python code using `exec()`"""
+
+    typing(clr.Fore.RED + "########" + clr.Style.RESET_ALL, 0.01, newln=True)
+
+    while True:
+        line = input(typing(clr.Fore.RED + "#  >> " + clr.Style.RESET_ALL, 0.01))
+
+        if line == "exit":
+            typing(clr.Fore.RED + "########" + clr.Style.RESET_ALL, 0.01, newln=True)
+            return True
+
+        if line == "-block":
+            script = ''''''
+
+            while True:
+                line = input(typing(clr.Fore.RED + "# >>> " + clr.Style.RESET_ALL, 0.01))
+
+                if line == "-block":
+                    break
+
+                script += line
+                script += "\n"
+
+        else:    
+            script = line
+
+        try:
+            typing(clr.Fore.LIGHTRED_EX + "::::::::" + clr.Style.RESET_ALL, 0.01, newln=True)
+            exec(script)
+            typing(clr.Fore.LIGHTRED_EX + "........" + clr.Style.RESET_ALL, 0.01, newln=True)
+        except Exception as warning:
+            typing(clr.Fore.LIGHTWHITE_EX + f":: {warning}" + clr.Style.RESET_ALL, 0.01, newln=True)
+
 
 #typing("Mary had a little lamb", 0.09)

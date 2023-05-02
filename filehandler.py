@@ -8,7 +8,7 @@ import sys
 
 import colorama as clr
 
-from funcs import typing, change_directory, show_directory, move_directory, jump_directory
+from funcs import typing, change_directory, show_directory, move_directory, jump_directory, exec_code
 
 clr.init()
 
@@ -28,6 +28,7 @@ help_pages = {
     2: {
         "cls": "Clears the screen",
         "pdir": "Prints the current working directory",
+        "exec": "Execute Python code"
     }
 }
 
@@ -40,7 +41,8 @@ help_header = {
     "cdir": "Write the full path you want to enter",
     "sdir": "Prints all items in the current directory",
     "cls": "(cls) clears the screen",
-    "pdir": "Print the current directory"
+    "pdir": "Print the current directory",
+    "exec": "Opens the exec interface to execute Python code"
 }
 
 # :: help (cmd) -> Extra information if needed
@@ -53,6 +55,7 @@ help_subheader = {
     "sdir": None,
     "cls": None,
     "pdir": None,
+    "exec": None,
 }
 
 # :: help (cmd) -> Displays subcommands if present
@@ -65,6 +68,7 @@ help_subcom = {
     "sdir": None,
     "cls": None,
     "pdir": None,
+    "exec": ["-block", "Allows you to write multi-line code. Use -del to delete the block of code. Remember to indent!"],
 }
 
 
@@ -170,15 +174,15 @@ class FileHandler():
         if request[0] in "help" or request[0] in "cmd":
             if not run_args:
                 self.display_help(1)
-                return True
+
             try:
                 argument = int(argument)
                 self.display_help(argument)
-                return True
+
             except ValueError:
                 try:
                     print_help(argument)
-                    return True
+
                 except KeyError:
                     typing(clr.Fore.YELLOW + f"-- help ({argument}) not found" + clr.Style.RESET_ALL, 0.01, newln=True)
                     return False
@@ -238,12 +242,17 @@ class FileHandler():
                 return False
             print(" # " + " ".join(request[1:]), end="\n")
 
+        #* EXEC
+        elif request[0] == "exec":
+            exec_code()
+
         #* EXIT
         elif request[0] in "exit":
             self.window_end()
 
         else:
             return False
+        
         return True
 
 
