@@ -5,9 +5,7 @@ Executions runs the program.
 
 import os
 import sys
-
 import colorama as clr
-
 from funcs import typing, change_directory, show_directory, move_directory, jump_directory, exec_code
 
 clr.init()
@@ -62,7 +60,7 @@ help_subheader = {
 #   Tree format -> ["(sub_cmd)", "(description)", "(sub_cmd)", "(description)"]
 help_subcom = {
     "help": None,
-    "move": ["-up", "Move up one directory", "-files", "Toggles item display mode", "-mkdir", "Creates a folder in the current directory", "-remove", "Lets you remove a file", "-exit", "Exit"],
+    "move": ["-up", "Move up one directory", "-files", "Toggles item display mode", "-mkdir", "Creates a folder in the current directory", "-remove", "Lets you remove a file", "exit", "Exit"],
     "jump": None,
     "cdir": None,
     "sdir": None,
@@ -150,10 +148,9 @@ class FileHandler():
 
     def main(self):
         """Input element for request handler"""
+        
         while True:
-
             select = input(typing(clr.Fore.BLUE + ":: " + clr.Style.RESET_ALL, 0.01)).lower()
-
             if not select:
                 continue
 
@@ -174,21 +171,19 @@ class FileHandler():
         if request[0] in "help" or request[0] in "cmd":
             if not run_args:
                 self.display_help(1)
-
-            try:
-                argument = int(argument)
-                self.display_help(argument)
-
-            except ValueError:
+            else:
                 try:
-                    print_help(argument)
-
-                except KeyError:
-                    typing(clr.Fore.YELLOW + f"-- help ({argument}) not found" + clr.Style.RESET_ALL, 0.01, newln=True)
-                    return False
-            except TypeError:
-                typing(clr.Fore.YELLOW + "-- Type Error" + clr.Style.RESET_ALL, 0.01, newln=True)
-                return 0
+                    argument = int(argument)
+                    self.display_help(argument)
+                except ValueError:
+                    try:
+                        print_help(argument)
+                    except KeyError:
+                        typing(clr.Fore.YELLOW + f"-- help ({argument}) not found" + clr.Style.RESET_ALL, 0.01, newln=True)
+                        return False
+                except TypeError:
+                    typing(clr.Fore.YELLOW + "-- Type Error" + clr.Style.RESET_ALL, 0.01, newln=True)
+                    return 0
 
         #* HELLO WORLD
         elif request[0] in "hello world":
@@ -209,17 +204,16 @@ class FileHandler():
         #* SDIR
         elif request[0] in "sdir" or request[0] == "showdir":
             if not run_args:
-                show_directory(0, True)
-                return True
+                show_directory(0)
 
-            if argument == 'd' or argument in "directory":
-                show_directory(1, True)
+            elif argument == 'd' or argument in "directory":
+                show_directory(1)
 
             elif argument == 'f' or argument in "files":
-                show_directory(2, True)
+                show_directory(2)
 
             elif argument == 'a' or argument in "all":
-                show_directory(0, True)
+                show_directory(0)
 
             else:
                 print(clr.Fore.GREEN + "-- Unknown argument for sdir" + clr.Style.RESET_ALL)
@@ -236,8 +230,6 @@ class FileHandler():
 
         #* PRINT
         elif request[0] == "prt" or request[0] == "print":
-            if len(request) < 2:
-                return False
             if not request[1]:
                 return False
             print(" # " + " ".join(request[1:]), end="\n")
@@ -252,7 +244,7 @@ class FileHandler():
 
         else:
             return False
-        
+
         return True
 
 
@@ -283,4 +275,4 @@ class FileHandler():
 if __name__ == "__main__":
     FH = FileHandler(debug_no_play=False)
 
-    print("\n--EXIT--")
+    print("\n EXIT")

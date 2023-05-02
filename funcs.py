@@ -82,7 +82,7 @@ def move_directory():
     while True:
         #? os.system("cls||clear")
 
-        show_directory(display_valve, False)
+        show_directory(display_valve)
         select = input(typing(clr.Fore.LIGHTGREEN_EX + ":: " + clr.Style.RESET_ALL, 0.01)).lower()
         print()
 
@@ -94,7 +94,7 @@ def move_directory():
         #else:
         #    sub_cmd = False
 
-        if select in ('-exit', '-e'): #* Exit
+        if select in ('exit', 'e'): #* Exit
             typing(clr.Fore.LIGHTGREEN_EX + ":: :: :: " + os.getcwd() + clr.Style.RESET_ALL, 0.01, newln=True)
             return True
 
@@ -206,34 +206,36 @@ def exec_code():
 
     typing(clr.Fore.RED + "########" + clr.Style.RESET_ALL, 0.01, newln=True)
 
-    while True:
+    while True: #* Main loop
         line = input(typing(clr.Fore.RED + "#  >> " + clr.Style.RESET_ALL, 0.01))
 
-        if line == "exit":
+        if line != "-block" and line != "exit": #* If not a command, run as a single line of code
+            script = line
+
+        elif line == "exit":
             typing(clr.Fore.RED + "########" + clr.Style.RESET_ALL, 0.01, newln=True)
             return True
 
-        if line == "-block":
+        elif line == "-block":
             script = ''''''
 
-            while True:
+            while True: #* Block code mode
                 line = input(typing(clr.Fore.RED + "# >>> " + clr.Style.RESET_ALL, 0.01))
-
                 if line == "-block":
                     break
-
                 script += line
                 script += "\n"
 
-        else:    
-            script = line
+        else: #* Not a recognized input, so ignore
+            continue
 
-        try:
-            typing(clr.Fore.LIGHTRED_EX + "::::::::" + clr.Style.RESET_ALL, 0.01, newln=True)
+        try: #* Execution of written code
+            typing(clr.Fore.LIGHTRED_EX + "''''''''" + clr.Style.RESET_ALL, 0.01, newln=True)
             exec(script)
-            typing(clr.Fore.LIGHTRED_EX + "........" + clr.Style.RESET_ALL, 0.01, newln=True)
         except Exception as warning:
             typing(clr.Fore.LIGHTWHITE_EX + f":: {warning}" + clr.Style.RESET_ALL, 0.01, newln=True)
+        finally:
+            typing(clr.Fore.LIGHTRED_EX + "........" + clr.Style.RESET_ALL, 0.01, newln=True)
 
 
 #typing("Mary had a little lamb", 0.09)
