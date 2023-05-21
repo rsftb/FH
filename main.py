@@ -66,7 +66,7 @@ help_subcom = {
     "sdir": None,
     "cls": None,
     "pdir": None,
-    "exec": ["-block", "Allows you to write multi-line code. Use -del to delete the block of code. Remember to indent!"],
+    "exec": ["-block", "Allows you to write multi-line code. Write a block of code by surrounding your code with -block. Use -del to delete the block of code. Remember to indent!"],
 }
 
 
@@ -109,7 +109,6 @@ class FileHandler():
     def __init__(self, debug_no_play=False):
         self.initializing = True
 
-
         if FileHandler.__instance is not None:
             raise UserWarning("Only one instance of FileHandler allowed")
 
@@ -121,6 +120,7 @@ class FileHandler():
             self.window_new(1)
         else:
             return
+
 
     def window_new(self, mode):
         """Start-up program"""
@@ -148,7 +148,7 @@ class FileHandler():
 
     def main(self):
         """Input element for request handler"""
-        
+
         while True:
             select = input(typing(clr.Fore.BLUE + ":: " + clr.Style.RESET_ALL, 0.01)).lower()
             if not select:
