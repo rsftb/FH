@@ -177,7 +177,7 @@ def jump_directory():
     parent = input(typing(clr.Fore.CYAN + "  || " + clr.Style.RESET_ALL + "\\", 0.01))
     cwd_split = os.getcwd().split("\\")
 
-    if not parent or parent[0] == ' ' or all(letter == ' ' for letter in parent):
+    if not parent or all(letter == ' ' for letter in parent):
         typing(clr.Fore.CYAN + " // Jump failed, input is empty" + clr.Style.RESET_ALL, 0.005, newln=True)
         return None
 
