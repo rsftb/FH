@@ -56,6 +56,7 @@ help_subheader = {
     "exec": None,
 }
 
+#! Revisit! Bad structure
 # :: help (cmd) -> Displays subcommands if present
 #   Tree format -> ["(sub_cmd)", "(description)", "(sub_cmd)", "(description)"]
 help_subcom = {
@@ -71,7 +72,7 @@ help_subcom = {
 
 
 def print_help(title):
-    """Executes on any help command"""
+    """Executes on any help command, i.e. `help help`"""
 
     #* HEADER // Always prints
     typing(clr.Fore.YELLOW + f":: {title} - {help_header[title]}" + clr.Style.RESET_ALL, 0.01, newln=True)
@@ -107,14 +108,11 @@ class FileHandler():
         return FileHandler.__instance
 
     def __init__(self, debug_no_play=False):
-        self.initializing = True
 
         if FileHandler.__instance is not None:
             raise UserWarning("Only one instance of FileHandler allowed")
 
         FileHandler.__instance = self
-
-        self.initializing = False
 
         if not debug_no_play:
             self.window_new(1)

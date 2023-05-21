@@ -10,7 +10,7 @@ import colorama as clr
 
 
 def typing(sentence: str, slp: float, prtend='', newln=False):
-    """Customizable typewriter effect for console printing"""
+    "Customizable typewriter effect for console printing"
 
     for letter in sentence:
         time.sleep(slp/2)
@@ -25,7 +25,11 @@ def typing(sentence: str, slp: float, prtend='', newln=False):
 
 #? printing what color
 def change_directory():
-    """Opens the cdir interface"""
+    """
+    Opens the cdir interface.\n
+    case insensitive
+    """
+
     typing(clr.Fore.GREEN + " \\\\ Change directory to? (case insensitive) => " + os.getcwd() + clr.Style.RESET_ALL, 0.01, newln=True)
 
     to = input(typing(clr.Fore.GREEN + "  || " + clr.Style.RESET_ALL + "C:\\", 0.01))
@@ -42,7 +46,7 @@ def change_directory():
 
 
 def show_directory(case: int):
-    """Displays directory content by filter, prepends folders with `>>`"""
+    "Displays directory content by filter, prepends folders with `>>`"
 
     print(clr.Fore.GREEN + os.getcwd() + clr.Style.RESET_ALL)
 
@@ -76,27 +80,25 @@ def show_directory(case: int):
 
 
 def move_directory():
-    """Execution opens an interface for moving through local files"""
+    "Execution opens an interface for moving through local files"
+
     typing(clr.Fore.LIGHTGREEN_EX + ":: :: :: ::" + clr.Style.RESET_ALL, 0.01, newln=True)
     display_valve = 0
     while True:
-        #? os.system("cls||clear")
 
         show_directory(display_valve)
         select = input(typing(clr.Fore.LIGHTGREEN_EX + ":: " + clr.Style.RESET_ALL, 0.01)).lower()
-        print()
 
         if not select:
+            print()
             continue
 
-        #if select[0] == '-':
-        #    sub_cmd = True
-        #else:
-        #    sub_cmd = False
-
         if select in ('exit', 'e'): #* Exit
-            typing(clr.Fore.LIGHTGREEN_EX + ":: :: :: " + os.getcwd() + clr.Style.RESET_ALL, 0.01, newln=True)
+            typing(clr.Fore.LIGHTGREEN_EX + "::", 0.01, newln=True)
+            typing(":: :: :: " + os.getcwd() + clr.Style.RESET_ALL, 0.01, newln=True)
             return True
+
+        print()
 
         if select in '-files': #* Swap content display filter
             if display_valve == 0:
@@ -155,25 +157,27 @@ def move_directory():
 
             print()
 
+
         else: #* If input isn't command, try to enter a directory
             goto = f"\\{select}"
             try:
                 os.chdir(f"{os.getcwd()}{goto}")
             except FileNotFoundError as err:
-                print(f"FileNotFoundError \n{err}")
+                print(f"FileNotFoundError \n{err}\n")
             except OSError as err:
-                print(f"OSError | Bad input \n{err}")
-
-            print()
+                print(f"OSError | Bad input \n{err}\n")
 
 
         continue
 
 
 def jump_directory():
-    """Jumps back to a select /directory/ in the tree by typing the name"""
-    # case sensitive, check if string is in 'here' (.lower?), maybe it's not a bad thing too
-    typing(clr.Fore.CYAN + " \\\\ Jump to? (case sensitive) => " + os.getcwd() + clr.Style.RESET_ALL, 0.01, newln=True)
+    """
+    Jumps back to a select /directory/ in the tree by typing the name.\n
+    Case Sensitive.
+    """
+
+    typing(clr.Fore.CYAN + " \\\\ Jump to? (Case Sensitive) => " + os.getcwd() + clr.Style.RESET_ALL, 0.01, newln=True)
     parent = input(typing(clr.Fore.CYAN + "  || " + clr.Style.RESET_ALL + "\\", 0.01))
     cwd_split = os.getcwd().split("\\")
 
