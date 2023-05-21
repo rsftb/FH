@@ -206,7 +206,7 @@ def exec_code():
 
     typing(clr.Fore.RED + "########" + clr.Style.RESET_ALL, 0.01, newln=True)
 
-    while True: #* Main loop
+    while True: #* Single line mode
         line = input(typing(clr.Fore.RED + "#  >> " + clr.Style.RESET_ALL, 0.01))
 
         if line != "-block" and line != "exit": #* If not a command, run as a single line of code
